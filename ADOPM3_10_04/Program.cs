@@ -14,22 +14,26 @@ namespace ADOPM3_10_04
 			byte[] signature;
 			object hasher = SHA512.Create();         
 
-			// Generate a new key pair, then sign the data with it:
+			//The Signer:
+			//Generate a new key pair, then sign the data with it:
+			//Private key can be used to sign
+			//Public key can only be used to validate the signature
 			using (var publicPrivate = new RSACryptoServiceProvider(2048))
 			{
 				signature = publicPrivate.SignData(data, hasher);
 				publicKey = publicPrivate.ExportCspBlob(false);    // get public key
 			}
 
-			// Create a fresh RSA using just the public key, then test the signature.
+			//The Reader, has only access to the public key:
+			//Create a fresh RSA using just the public key, then validate the signature.
 			using (var publicOnly = new RSACryptoServiceProvider())
 			{
 				publicOnly.ImportCspBlob(publicKey);
-				Console.WriteLine(publicOnly.VerifyData(data, hasher, signature)); // True
+				Console.WriteLine($"Data uncorrupted: {publicOnly.VerifyData(data, hasher, signature)}"); // True
 
 				// Let's now tamper with the data, and recheck the signature:
 				data[0] = 0;
-				Console.WriteLine(publicOnly.VerifyData(data, hasher, signature)); // False
+				Console.WriteLine($"Data uncorrupted: {publicOnly.VerifyData(data, hasher, signature)}"); // False
 			}
         }
     }
