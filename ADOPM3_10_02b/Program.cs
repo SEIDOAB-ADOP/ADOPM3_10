@@ -62,18 +62,6 @@ namespace ADOPM3_10_02b
             Console.WriteLine($"As byte[]:");
             foreach (byte b in decryptedBytes) Console.Write($"{b:x2} ");
             Console.WriteLine();
-
-
-            static string fname(string name)
-            {
-                var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                documentPath = Path.Combine(documentPath, "AOOP2", "Examples");
-                if (!Directory.Exists(documentPath)) Directory.CreateDirectory(documentPath);
-                return Path.Combine(documentPath, name);
-            }
         }
     }
-    //Exercise:
-    //1.    Generate random key and iv and store it in a key-file in Base64 string format
-    //2.    Decrypt and encrypted file by first reading in the key and iv from the key-file
 }

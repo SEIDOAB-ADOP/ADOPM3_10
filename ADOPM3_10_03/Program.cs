@@ -9,13 +9,13 @@ namespace ADOPM3_10_03
     {
         static void Main(string[] args)
         {
-            //Sender wants to send to reciever a secret small message, typically a key for symmetric encryption
-            //Sender initates by informing Reciever that it wants to send the message
+            //Step1: The Sender informs the Recipient that he/she wants to send a message, 
+            //typically a key for symmetric encryption
             byte[] data = Encoding.UTF8.GetBytes("Key for symmetric encryption");
 
             Console.WriteLine($"Message Sender wants to send to Reciever: {Encoding.UTF8.GetString(data)}");
 
-            //Receiever creates a public/private keypair, possibly save to disk:
+            //Step2: Receiever creates a public/private keypair, possibly save to disk:
             using (var rsa = new RSACryptoServiceProvider(2048))
             {
                 File.WriteAllText(fname("Example11_03_PublicKeyOnly.xml"), rsa.ToXmlString(false));
@@ -25,11 +25,11 @@ namespace ADOPM3_10_03
             //Reciever keeps the private Key super secret
             string publicPrivate = File.ReadAllText(fname("Example11_03_PublicPrivate.xml"));
 
-            //Receiever gives ONLY the public key to the sender
+            //Step 3: Receiever gives ONLY the public key to the sender
             string publicKeyOnly = File.ReadAllText(fname("Example11_03_PublicKeyOnly.xml"));
 
 
-            //Sender encrypts the message using the public key and sends it to Reciever
+            //Step 4: Sender encrypts the message using the public key and sends it to Reciever
             byte[] encrypted, decrypted;
             using (var rsaPublicOnly = new RSACryptoServiceProvider())
             {
@@ -37,7 +37,7 @@ namespace ADOPM3_10_03
                 encrypted = rsaPublicOnly.Encrypt(data, true);
            }
 
-            //Reciever decrypts the message using the Private Key
+            //Step 5: Reciever decrypts the message using the Private Key
             using (var rsaPublicPrivate = new RSACryptoServiceProvider())
             {
                 // With the private key we can successfully decrypt:
@@ -50,7 +50,7 @@ namespace ADOPM3_10_03
             static string fname(string name)
             {
                 var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                documentPath = Path.Combine(documentPath, "AOOP2", "Examples");
+                documentPath = Path.Combine(documentPath, "ADOP", "Examples");
                 if (!Directory.Exists(documentPath)) Directory.CreateDirectory(documentPath);
                 return Path.Combine(documentPath, name);
             }

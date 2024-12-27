@@ -63,7 +63,7 @@ namespace ADOPM3_10_02
             static string fname(string name)
             {
                 var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                documentPath = Path.Combine(documentPath, "AOOP2", "Examples");
+                documentPath = Path.Combine(documentPath, "ADOP", "Examples");
                 if (!Directory.Exists(documentPath)) Directory.CreateDirectory(documentPath);
                 return Path.Combine(documentPath, name);
             }
