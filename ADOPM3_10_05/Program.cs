@@ -1,33 +1,60 @@
 ﻿using System;
 using System.Text;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Identity;
 
 namespace ADOPM3_10_05
 {
-    class Program
+    public class User
+    {
+        public string UserName { get; set;}
+        public string LoginPassword { get; set;}
+    }
+
+    public class Program
     {
         static void Main(string[] args)
         {
+            var user = new User(){UserName = "Rudolf", LoginPassword="Mupparnasjulsaga"};
+
+            //https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/consumer-apis/password-hashing
+            //Using Identity to create a password, usen when Microsoft Identity framework is used.
+            var passwordHasher = new PasswordHasher<User>();
+
+            var registeredPassword = "Mupparnasjulsaga"; 
+            var hashedPasswordIdentity = passwordHasher.HashPassword(user, registeredPassword);
+            Console.WriteLine($"hashedPassword using Identity: {hashedPasswordIdentity}");
+
+            var result = passwordHasher.VerifyHashedPassword(user, hashedPasswordIdentity, user.LoginPassword); 
+            bool isPasswordCorrect = result == PasswordVerificationResult.Success; 
+            System.Console.WriteLine($"Is Password Correct: {isPasswordCorrect}");
+
+
+            //Using standalone  KeyDerivation.Pbkdf2
             //Hash a password using salt and streching
-            byte[] encrypted = KeyDerivation.Pbkdf2(
-                password: "Mupparnasjulsaga",
+            byte[] registeredPasswordKeyDerivation = KeyDerivation.Pbkdf2(
+                password: registeredPassword,
                 salt: Encoding.UTF8.GetBytes("j78Y#p)/saREN!y3@"),
                 prf: KeyDerivationPrf.HMACSHA512,
                 iterationCount: 100,
                 numBytesRequested: 64);
 
-            Console.WriteLine("Encrypted password");
-            foreach (byte b in encrypted) Console.Write($"{b:x2} ");
+            string registeredPasswordKeyDerivationB64 = Convert.ToBase64String(registeredPasswordKeyDerivation);
+            Console.WriteLine($"hashedPassword using KeyDerivation: {registeredPasswordKeyDerivationB64}");
 
-            Console.WriteLine("\n\nEncrypted password in Base64 string");
-            string Base64encryption = Convert.ToBase64String(encrypted);
-            Console.WriteLine(Base64encryption);
+            byte[] loginPasswordKeyDerivation = KeyDerivation.Pbkdf2(
+                password: user.LoginPassword,
+                salt: Encoding.UTF8.GetBytes("j78Y#p)/saREN!y3@"),
+                prf: KeyDerivationPrf.HMACSHA512,
+                iterationCount: 100,
+                numBytesRequested: 64);
 
+            string loginPasswordKeyDerivationB64 = Convert.ToBase64String(loginPasswordKeyDerivation);
+
+            isPasswordCorrect = registeredPasswordKeyDerivationB64 == loginPasswordKeyDerivationB64; 
+            System.Console.WriteLine($"Is Password Correct: {isPasswordCorrect}");
         }
     }
 }
 //Exercise:
-//1.    Use the KeyDerivation.Pbkdf2 to create a key of 16 bytes from a sentence "Stockholm is nice in spring"
-//2.    Modify the code generating the key in the symetric encryption/decryption scheme, ADOPM3_10_02,
-//      to use key generated from  "Stockholm is nice in spring". This means that is the magic sentence Reciever and Sender is now sharing
-
+//1.    Test by modifiying the user.LoginPassword
