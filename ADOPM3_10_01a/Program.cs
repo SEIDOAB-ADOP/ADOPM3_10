@@ -9,14 +9,13 @@ namespace ADOPM3_10_01a
             //Base-64 conversion
 
             //Step 1: Original
-            //Either a string with strange characters or already a byte[], perhaps an image
-            string strOrigin = "This could be a hash key representing a strong password";
+            //Either a string with or already a byte[], perhaps an image
+            string strOrigin = "This is a string to demonstrate and generate a hash in byte[]";
             byte[] bytesOrigin = System.Text.Encoding.UTF8.GetBytes(strOrigin);
             Console.WriteLine();
             Console.WriteLine(strOrigin);
 
             //Step2: Convert to Base64:
-            //Convert to either a Base64 char[] or Base64 string. I demonstrate both
             string strBase64 = Convert.ToBase64String(bytesOrigin);
 
             //char[] charsBase64 = new char[strBase64.Length];
@@ -28,11 +27,6 @@ namespace ADOPM3_10_01a
             byte[] bytesConverted = Convert.FromBase64String(strBase64);
             string stringConverted = System.Text.Encoding.UTF8.GetString(bytesConverted);
             Console.WriteLine(stringConverted);
-
-            //Demonstrate the same but from the Base64 char[]
-            //bytesConverted = Convert.FromBase64CharArray(charsBase64, 0, charsBase64.Length);
-            //stringConverted = System.Text.Encoding.UTF8.GetString(bytesConverted);
-            //Console.WriteLine(stringConverted);
         }
     }
 }
