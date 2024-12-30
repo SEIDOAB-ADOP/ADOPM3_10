@@ -18,15 +18,18 @@ namespace ADOPM3_10_03
             //Step2: Receiever creates a public/private keypair, possibly save to disk:
             using (var rsa = new RSACryptoServiceProvider(2048))
             {
-                File.WriteAllText(fname("Example11_03_PublicKeyOnly.xml"), rsa.ToXmlString(false));
-                File.WriteAllText(fname("Example11_03_PublicPrivate.xml"), rsa.ToXmlString(true));
+                File.WriteAllText(fname("Example11_03_PublicKey.xml"), rsa.ToXmlString(false));
+                System.Console.WriteLine($"Public key stored in: {fname("Example11_03_PublicKey.xml")}");
+
+                File.WriteAllText(fname("Example11_03_PrivateKey.xml"), rsa.ToXmlString(true));
+                System.Console.WriteLine($"Private key stored in: {fname("Example11_03_PrivateKey.xml")}");
             }
 
             //Reciever keeps the private Key super secret
-            string publicPrivate = File.ReadAllText(fname("Example11_03_PublicPrivate.xml"));
+            string publicPrivate = File.ReadAllText(fname("Example11_03_PrivateKey.xml"));
 
             //Step 3: Receiever gives ONLY the public key to the sender
-            string publicKeyOnly = File.ReadAllText(fname("Example11_03_PublicKeyOnly.xml"));
+            string publicKeyOnly = File.ReadAllText(fname("Example11_03_PublicKey.xml"));
 
 
             //Step 4: Sender encrypts the message using the public key and sends it to Reciever
